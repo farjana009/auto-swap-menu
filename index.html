@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu Swap</title>
+
+    <style>
+        nav[aria-label="Primary"] {
+            background: #282c34;
+            padding: 10px;
+        }
+
+        nav[aria-label="Primary"] ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Make horizontal */
+            align-items: center;
+        }
+
+        nav[aria-label="Primary"] li {
+            margin: 0 10px;
+        }
+
+        nav[aria-label="Primary"] a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+        }
+
+        nav[aria-label="Primary"] a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+<body>
+
+<nav aria-label="Primary">
+    <ul>
+        <li><a href="#">Docs</a></li>
+        <li><a href="#">Learn</a></li>
+        <li><a href="#">Reference</a></li>
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Blog</a></li>
+    </ul>
+</nav>
+
+<script>
+    (function() {
+        const sessionKey = 'menuSwapDone';
+
+        if (sessionStorage.getItem(sessionKey)) {
+            return;
+        }
+
+        window.addEventListener('load', function() {
+            try {
+                const nav = document.querySelector('nav[aria-label="Primary"]');
+                if (!nav) {
+                    console.warn('Primary nav not found.');
+                    return;
+                }
+
+                const listItems = nav.querySelectorAll('ul > li');
+
+                let referenceItem = null;
+                let communityItem = null;
+
+                listItems.forEach(li => {
+                    const text = li.textContent.trim();
+                    if (text.includes('Reference')) {
+                        referenceItem = li;
+                    }
+                    if (text.includes('Community')) {
+                        communityItem = li;
+                    }
+                });
+
+                if (!referenceItem || !communityItem) {
+                    console.warn('Menu items not found.');
+                    return;
+                }
+
+                const parent = referenceItem.parentNode;
+                // move Community before Reference
+                parent.insertBefore(communityItem, referenceItem);
+
+                sessionStorage.setItem(sessionKey, 'true');
+                console.log('Menu items swapped successfully.');
+            } catch (error) {
+                console.error('Error swapping menu items:', error);
+            }
+        });
+    })();
+
+</script>
+
+</body>
+</html>
